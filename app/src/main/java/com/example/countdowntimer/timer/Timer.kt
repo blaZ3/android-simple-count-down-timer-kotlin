@@ -71,7 +71,7 @@ class Timer : TimerI {
                 } else{
                     milliSecondsRemaining += milliseconds
                     LOCK.notifyAll()
-                    return milliseconds
+                    return milliSecondsRemaining
                 }
             }
         }else{
