@@ -4,7 +4,7 @@ import java.lang.Exception
 
 interface TimerI {
 
-    fun start(startTimeMillis: Long, maxTime: Long)
+    fun start(startTimeMillis: Long, maxTime: Long, callback: TimerCallback)
     fun stop(): Long
     fun increaseTimer(milliseconds: Long)
 

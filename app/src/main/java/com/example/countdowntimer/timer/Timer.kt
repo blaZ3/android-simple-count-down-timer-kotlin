@@ -2,12 +2,13 @@ package com.example.countdowntimer.timer
 
 import android.os.Handler
 
-class Timer(private val callback: TimerI.TimerCallback): TimerI {
+class Timer(): TimerI {
     private val LOCK = java.lang.Object()
     private val DELAY_MILLIS = 100L
 
     @Volatile var milliSecondsRemaining: Long = 0L
     private var maxTime: Long = 0L
+    private var callback: TimerI.TimerCallback? = null
 
     private var isStopped: Boolean = false
     private var isRunning: Boolean = false
@@ -15,9 +16,10 @@ class Timer(private val callback: TimerI.TimerCallback): TimerI {
     private val delayedHandler:Handler = Handler()
     private lateinit var runnable:Runnable
 
-    override fun start(startTimeMillis: Long, maxTime: Long) {
+    override fun start(startTimeMillis: Long, maxTime: Long, callback: TimerI.TimerCallback) {
         this.milliSecondsRemaining = startTimeMillis
         this.maxTime = maxTime
+        this.callback = callback
 
         runnable = Runnable {
             synchronized(LOCK){
@@ -50,14 +52,14 @@ class Timer(private val callback: TimerI.TimerCallback): TimerI {
         if(isRunning){
             synchronized(LOCK){
                 if ((milliSecondsRemaining + milliseconds) > maxTime){
-                    callback.onError(IllegalStateException("Cannot increase time more than max time"))
+                    callback?.onError(IllegalStateException("Cannot increase time more than max time"))
                 } else{
                     milliSecondsRemaining += milliseconds
                 }
                 LOCK.notifyAll()
             }
         }else{
-            callback.onError(IllegalStateException("Timer is not running"))
+            callback?.onError(IllegalStateException("Timer is not running"))
         }
 
     }
