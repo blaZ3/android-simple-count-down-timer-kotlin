@@ -1,5 +1,6 @@
 package com.example.countdowntimer.countDown
 
+import com.example.countdowntimer.timer.TimerException
 import com.example.countdowntimer.timer.TimerI
 import java.lang.Exception
 import kotlin.concurrent.timer
@@ -28,7 +29,11 @@ class CountDownPresenter(private val view: CountDownContract.View, private val t
     }
 
     override fun incrementTimer() {
-        timer.increaseTimer(10 * 1000L)
+        try {
+            timer.increaseTimer(10 * 1000L)
+        } catch (ex: TimerException){
+            view.showToast(ex.message.toString())
+        }
     }
 
     private fun timeInMillisToString(millis: Long): String{

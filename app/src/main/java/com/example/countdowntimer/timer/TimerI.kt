@@ -4,7 +4,7 @@ interface TimerI {
 
     fun start(startTimeMillis: Long, maxTime: Long, callback: TimerCallback)
     fun stop(): Long
-    fun increaseTimer(milliseconds: Long)
+    fun increaseTimer(milliseconds: Long): Long
 
     interface TimerCallback{
         fun onTimeUpdate(millisRemaining: Long)
@@ -14,7 +14,7 @@ interface TimerI {
 
 }
 
-
 sealed class TimerException(message: String): Exception(message)
 object TimerMaxLimitReachedException: TimerException("Cannot increase time more than max time")
+object TimerAlreadyStartedException: TimerException("Timer is already running")
 object TimerNotStartedException: TimerException("Timer is not running")

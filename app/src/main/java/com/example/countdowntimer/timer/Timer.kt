@@ -1,6 +1,7 @@
 package com.example.countdowntimer.timer
 
 import android.os.Handler
+import android.os.HandlerThread
 
 class Timer : TimerI {
     private val LOCK = java.lang.Object()
@@ -8,58 +9,73 @@ class Timer : TimerI {
 
     @Volatile var milliSecondsRemaining: Long = 0L
     private var maxTime: Long = 0L
-    private var callback: TimerI.TimerCallback? = null
 
     private var isStopped: Boolean = false
     private var isRunning: Boolean = false
 
-    private val delayedHandler:Handler = Handler()
-    private lateinit var runnable:Runnable
+    private lateinit var timerThread: HandlerThread
+    private lateinit var timerHandler: Handler
+    private lateinit var timerRunnable:Runnable
 
     override fun start(startTimeMillis: Long, maxTime: Long, callback: TimerI.TimerCallback) {
+        if (isRunning){
+            callback.onError(TimerAlreadyStartedException)
+            return
+        }
+
         this.milliSecondsRemaining = startTimeMillis
         this.maxTime = maxTime
-        this.callback = callback
 
-        runnable = Runnable {
+        timerThread = HandlerThread("Timer")
+        timerThread.start()
+        timerHandler = Handler(timerThread.looper)
+
+        timerRunnable = Runnable {
             synchronized(LOCK){
                 milliSecondsRemaining -= DELAY_MILLIS
-
-                if (milliSecondsRemaining > 0 && !isStopped){
-                    callback.onTimeUpdate(milliSecondsRemaining)
-                    delayedHandler.postDelayed(runnable, DELAY_MILLIS)
+                if (!isStopped){
+                    if (milliSecondsRemaining > 0){
+                        callback.onTimeUpdate(milliSecondsRemaining)
+                        timerHandler.postDelayed(timerRunnable, DELAY_MILLIS)
+                    } else{
+                        callback.onDone()
+                        isRunning = false
+                    }
                 } else{
-                    callback.onDone()
                     isRunning = false
                 }
-
                 LOCK.notifyAll()
             }
         }
 
-        delayedHandler.post(runnable)
+        timerHandler.post(timerRunnable)
         isRunning = true
     }
 
     override fun stop(): Long {
         isStopped = true
-        isRunning = false
+
+        if (timerThread.isAlive){
+            timerThread.quitSafely()
+        }
 
         return milliSecondsRemaining
     }
 
-    override fun increaseTimer(milliseconds: Long) {
+    override fun increaseTimer(milliseconds: Long): Long {
         if(isRunning){
             synchronized(LOCK){
                 if ((milliSecondsRemaining + milliseconds) > maxTime){
-                    callback?.onError(TimerMaxLimitReachedException)
+                    LOCK.notifyAll()
+                    throw TimerMaxLimitReachedException
                 } else{
                     milliSecondsRemaining += milliseconds
+                    LOCK.notifyAll()
+                    return milliseconds
                 }
-                LOCK.notifyAll()
             }
         }else{
-            callback?.onError(TimerNotStartedException)
+            throw TimerNotStartedException
         }
 
     }
