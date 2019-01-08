@@ -1,7 +1,5 @@
 package com.example.countdowntimer.timer
 
-import java.lang.Exception
-
 interface TimerI {
 
     fun start(startTimeMillis: Long, maxTime: Long, callback: TimerCallback)
@@ -15,3 +13,8 @@ interface TimerI {
     }
 
 }
+
+
+sealed class TimerException(message: String): Exception(message)
+object TimerMaxLimitReachedException: TimerException("Cannot increase time more than max time")
+object TimerNotStartedException: TimerException("Timer is not running")

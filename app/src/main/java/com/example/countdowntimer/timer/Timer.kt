@@ -2,7 +2,7 @@ package com.example.countdowntimer.timer
 
 import android.os.Handler
 
-class Timer(): TimerI {
+class Timer : TimerI {
     private val LOCK = java.lang.Object()
     private val DELAY_MILLIS = 100L
 
@@ -52,14 +52,14 @@ class Timer(): TimerI {
         if(isRunning){
             synchronized(LOCK){
                 if ((milliSecondsRemaining + milliseconds) > maxTime){
-                    callback?.onError(IllegalStateException("Cannot increase time more than max time"))
+                    callback?.onError(TimerMaxLimitReachedException)
                 } else{
                     milliSecondsRemaining += milliseconds
                 }
                 LOCK.notifyAll()
             }
         }else{
-            callback?.onError(IllegalStateException("Timer is not running"))
+            callback?.onError(TimerNotStartedException)
         }
 
     }

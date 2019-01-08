@@ -35,6 +35,10 @@ class CountDownPresenter(private val view: CountDownContract.View, private val t
         val minutes = (millis/1000)/60
         val seconds = (millis/1000) % 60
 
-        return "$minutes : $seconds : ${(millis%1000)/100}"
+        return if (minutes>0){
+            "$minutes : $seconds : ${(millis%1000)/100}"
+        }else{
+            "$seconds : ${(millis%1000)/100}"
+        }
     }
 }
