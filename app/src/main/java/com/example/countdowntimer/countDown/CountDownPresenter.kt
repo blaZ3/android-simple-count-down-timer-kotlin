@@ -1,4 +1,4 @@
 package com.example.countdowntimer.countDown
 
-class Timer {
+class CountDownPresenter {
 }
