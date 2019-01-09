@@ -39,10 +39,10 @@ class Timer : TimerI {
                         timerHandler.postDelayed(timerRunnable, DELAY_MILLIS)
                     } else{
                         callback.onDone()
-                        isRunning = false
+                        stopTimer()
                     }
                 } else{
-                    isRunning = false
+                    stopTimer()
                 }
                 LOCK.notifyAll()
             }
@@ -53,13 +53,12 @@ class Timer : TimerI {
     }
 
     override fun stop(): Long {
-        isStopped = true
-
-        if (timerThread.isAlive){
-            timerThread.quitSafely()
+        if (isRunning){
+            isStopped = true
+            return milliSecondsRemaining
+        }else {
+            throw TimerNotStartedException
         }
-
-        return milliSecondsRemaining
     }
 
     override fun increaseTimer(milliseconds: Long): Long {
@@ -77,6 +76,13 @@ class Timer : TimerI {
         }else{
             throw TimerNotStartedException
         }
+    }
 
+    private fun stopTimer(){
+        isRunning = false
+
+        if (timerThread.isAlive){
+            timerThread.quitSafely()
+        }
     }
 }
