@@ -25,7 +25,7 @@ class ValueFormatterTests {
 
 
     @Test
-    fun `when `(){
+    fun `when valueFormatter timeInMillisToString is called should return correct time as string`(){
         whenever(stringFetcher.getString(R.string.str_time_done)).thenReturn(STR_DONE)
 
         assert(valueFormatter.timeInMillisToString(0) == STR_DONE)

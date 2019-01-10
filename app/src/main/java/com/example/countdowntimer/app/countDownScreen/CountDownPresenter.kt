@@ -1,6 +1,7 @@
-package com.example.countdowntimer.app.countDown
+package com.example.countdowntimer.app.countDownScreen
 
 import com.example.countdowntimer.R
+import com.example.countdowntimer.app.timer.TimerException
 import com.example.countdowntimer.app.timer.TimerI
 import com.example.countdowntimer.helpers.ValueFormatter
 import com.example.countdowntimer.helpers.logger.LoggerI
@@ -33,8 +34,12 @@ class CountDownPresenter(private val view: CountDownContract.View,
         })
     }
 
-    override fun stopCountDown() {
-        timer.stop()
+    override fun stopCountDown(): Long {
+        return try {
+            timer.stop()
+        }catch (ex: TimerException){
+            0L
+        }
     }
 
     override fun incrementTimer() {

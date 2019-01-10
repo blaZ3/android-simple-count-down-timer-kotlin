@@ -1,8 +1,8 @@
 package com.example.countdowntimer
 
 import android.os.Handler
-import com.example.countdowntimer.app.countDown.CountDownContract
-import com.example.countdowntimer.app.countDown.CountDownPresenter
+import com.example.countdowntimer.app.countDownScreen.CountDownContract
+import com.example.countdowntimer.app.countDownScreen.CountDownPresenter
 import com.example.countdowntimer.app.timer.Timer
 import com.example.countdowntimer.app.timer.TimerI
 import com.example.countdowntimer.helpers.ValueFormatter

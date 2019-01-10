@@ -1,4 +1,4 @@
-package com.example.countdowntimer.app.countDown
+package com.example.countdowntimer.app.countDownScreen
 
 interface CountDownContract {
 
@@ -11,7 +11,7 @@ interface CountDownContract {
 
     interface Presenter{
         fun startCountDown(startTimeMillis: Long, maxTimeMillis: Long)
-        fun stopCountDown()
+        fun stopCountDown(): Long
         fun incrementTimer()
     }
 
