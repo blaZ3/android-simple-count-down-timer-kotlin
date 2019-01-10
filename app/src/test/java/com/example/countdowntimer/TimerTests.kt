@@ -1,8 +1,8 @@
 package com.example.countdowntimer
 
 import android.os.Handler
-import com.example.countdowntimer.app.timer.Timer
-import com.example.countdowntimer.timer.*
+import com.example.countdowntimer.app.timer.*
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -66,48 +66,21 @@ class TimerTests {
 
     @Test
     fun `should raise TimerNotStartedException when increaseTimer called before starting`(){
-        var exceptionRaised = false
-
-        try {
-            timer.increaseTimer(10 * 1000L)
-        }catch (ex: TimerNotStartedException){
-            exceptionRaised = true
-        }
-
-        assert(exceptionRaised)
-    }
-
-    @Test
-    fun `should raise TimerMaxLimitReachedException on increaseTime when not able to increase more than max time`() {
-        var exceptionRaised = false
-
-        timer.start(startTime, MAX_TIME, mock())
-
-        try {
-            timer.increaseTimer(1000L)
-        }catch (ex: TimerMaxLimitReachedException){
-            exceptionRaised = true
-        }
-        timer.stop()
-
-        assert(exceptionRaised)
+        val callback: TimerI.ChangeTimerCallback = mock()
+        timer.increaseTimer(10 * 1000L, callback)
+        verify(callback, times(1)).onError(TimerNotStartedException)
     }
 
 
     @Test
     fun `should not raise any TimerException when increaseTime is able to increment time`() {
-        var exceptionRaised = true
+        val callback: TimerI.ChangeTimerCallback = mock()
 
         timer.start(startTime, MAX_TIME, mock())
 
         Handler().postDelayed({
-            try {
-                timer.increaseTimer(1000L)
-            }catch (ex: TimerException){
-                exceptionRaised = true
-            }
-
-            assert(!exceptionRaised)
+            timer.increaseTimer(1000L, callback)
+            verify(callback, times(0)).onError(any())
         }, 2000L)
     }
 
