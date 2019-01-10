@@ -1,4 +1,4 @@
-package com.example.countdowntimer.countDown
+package com.example.countdowntimer.app.countDown
 
 interface CountDownContract {
 

@@ -1,14 +1,19 @@
-package com.example.countdowntimer.timer
+package com.example.countdowntimer.app.timer
 
 interface TimerI {
 
     fun start(startTimeMillis: Long, maxTime: Long, callback: TimerCallback)
     fun stop(): Long
-    fun increaseTimer(milliseconds: Long): Long
+    fun increaseTimer(milliseconds: Long, callback: ChangeTimerCallback)
 
     interface TimerCallback{
         fun onTimeUpdate(millisRemaining: Long)
         fun onDone()
+        fun onError(ex: Exception)
+    }
+
+    interface ChangeTimerCallback{
+        fun onTimeChanged(millisRemaining: Long)
         fun onError(ex: Exception)
     }
 

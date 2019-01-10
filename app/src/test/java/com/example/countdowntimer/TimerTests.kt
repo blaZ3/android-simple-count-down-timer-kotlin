@@ -1,6 +1,7 @@
 package com.example.countdowntimer
 
 import android.os.Handler
+import com.example.countdowntimer.app.timer.Timer
 import com.example.countdowntimer.timer.*
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times

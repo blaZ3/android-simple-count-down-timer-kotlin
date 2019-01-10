@@ -1,4 +1,4 @@
-package com.example.countdowntimer.timer
+package com.example.countdowntimer.app.timer
 
 import android.os.Handler
 import android.os.HandlerThread
@@ -61,20 +61,19 @@ class Timer : TimerI {
         }
     }
 
-    override fun increaseTimer(milliseconds: Long): Long {
+    override fun increaseTimer(milliseconds: Long, callback: TimerI.ChangeTimerCallback) {
         if(isRunning){
             synchronized(LOCK){
                 if ((milliSecondsRemaining + milliseconds) > maxTime){
-                    LOCK.notifyAll()
-                    throw TimerMaxLimitReachedException
+                    milliSecondsRemaining = maxTime
                 } else{
                     milliSecondsRemaining += milliseconds
-                    LOCK.notifyAll()
-                    return milliSecondsRemaining
                 }
+                LOCK.notifyAll()
+                callback.onTimeChanged(milliSecondsRemaining)
             }
         }else{
-            throw TimerNotStartedException
+            callback.onError(TimerNotStartedException)
         }
     }
 

@@ -3,4 +3,5 @@
     <string name="str_timer_start">-- : -- : --</string>
     <string name="str_increment_timer">+</string>
     <string name="str_time_done">DONE</string>
+    <string name="str_time_changed">Time changed</string>
 </resources>

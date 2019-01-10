@@ -3,9 +3,11 @@ package com.example.countdowntimer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.example.countdowntimer.countDown.CountDownContract
-import com.example.countdowntimer.countDown.CountDownPresenter
-import com.example.countdowntimer.timer.Timer
+import com.example.countdowntimer.app.countDown.CountDownContract
+import com.example.countdowntimer.app.countDown.CountDownPresenter
+import com.example.countdowntimer.app.timer.Timer
+import com.example.countdowntimer.helpers.logger.AppLogger
+import com.example.countdowntimer.helpers.stringFetcher.AppStringFetcher
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), CountDownContract.View {
@@ -18,7 +20,10 @@ class MainActivity : AppCompatActivity(), CountDownContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        presenter = CountDownPresenter(this, Timer())
+        presenter = CountDownPresenter(view = this, timer = Timer(),
+            logger = (application as MainApplication).logger,
+            stringFetcher = (application as MainApplication).stringFetcher)
+
         initView()
     }
 
