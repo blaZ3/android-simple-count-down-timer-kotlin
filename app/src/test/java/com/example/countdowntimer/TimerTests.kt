@@ -25,14 +25,11 @@ class TimerTests {
     @Test
     fun `should raise TimerNotStartedException when timer stop is called before starting`(){
         var exceptionRaised = false
-
         try {
             timer.stop()
         }catch (ex: TimerNotStartedException){
             exceptionRaised = true
         }
-
-
         assert(exceptionRaised)
     }
 
@@ -40,27 +37,21 @@ class TimerTests {
     fun `should return remainingTime when timer stopped after starting`(){
         var exceptionRaised = false
         var remainingTime = 0L
-
         timer.start(startTime, MAX_TIME, mock())
-
         try {
             remainingTime = timer.stop()
         }catch (ex: TimerException){
             exceptionRaised = true
         }
-
         timer.stop()
-
         assert(!exceptionRaised && remainingTime > 0L)
     }
 
     @Test
     fun `should call onError with TimerAlreadyStartedException when same timer started twice`(){
         val callback: TimerI.TimerCallback = mock()
-
         timer.start(startTime, MAX_TIME, callback)
         timer.start(startTime, MAX_TIME, callback)
-
         verify(callback, times(1)).onError(TimerAlreadyStartedException)
     }
 
@@ -70,7 +61,6 @@ class TimerTests {
         timer.increaseTimer(10 * 1000L, callback)
         verify(callback, times(1)).onError(TimerNotStartedException)
     }
-
 
     @Test
     fun `should not raise any TimerException when increaseTime is able to increment time`() {

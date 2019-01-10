@@ -2,12 +2,14 @@ package com.example.countdowntimer.app.countDown
 
 import com.example.countdowntimer.R
 import com.example.countdowntimer.app.timer.TimerI
+import com.example.countdowntimer.helpers.ValueFormatter
 import com.example.countdowntimer.helpers.logger.LoggerI
 import com.example.countdowntimer.helpers.stringFetcher.StringFetcherI
 
 class CountDownPresenter(private val view: CountDownContract.View,
                          private val timer: TimerI,
                          private val stringFetcher: StringFetcherI,
+                         private val valueFormatter: ValueFormatter,
                          private val logger: LoggerI):
     CountDownContract.Presenter {
 
@@ -16,7 +18,7 @@ class CountDownPresenter(private val view: CountDownContract.View,
         timer.start(startTimeMillis, maxTimeMillis, object : TimerI.TimerCallback{
             override fun onTimeUpdate(millisRemaining: Long) {
                 logger.d("onTimeUpdate", "$millisRemaining")
-                view.updateTimer(timeInMillisToString(millisRemaining))
+                view.updateTimer(valueFormatter.timeInMillisToString(millisRemaining))
             }
 
             override fun onDone() {
@@ -46,16 +48,5 @@ class CountDownPresenter(private val view: CountDownContract.View,
                 view.showToast(ex.message.toString())
             }
         })
-    }
-
-    private fun timeInMillisToString(millis: Long): String{
-        val minutes = (millis/1000)/60
-        val seconds = (millis/1000) % 60
-
-        return if (minutes>0){
-            "$minutes : $seconds : ${(millis%1000)/100}"
-        }else{
-            "$seconds : ${(millis%1000)/100}"
-        }
     }
 }

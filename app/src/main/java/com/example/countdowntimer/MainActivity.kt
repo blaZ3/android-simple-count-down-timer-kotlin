@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.example.countdowntimer.app.countDown.CountDownContract
 import com.example.countdowntimer.app.countDown.CountDownPresenter
 import com.example.countdowntimer.app.timer.Timer
+import com.example.countdowntimer.helpers.ValueFormatter
 import com.example.countdowntimer.helpers.logger.AppLogger
 import com.example.countdowntimer.helpers.logger.LoggerI
 import com.example.countdowntimer.helpers.stringFetcher.AppStringFetcher
@@ -33,7 +34,9 @@ class MainActivity : AppCompatActivity(), CountDownContract.View {
 
         presenter = CountDownPresenter(view = this, timer = Timer(),
             logger = logger,
-            stringFetcher = stringFetcher)
+            stringFetcher = stringFetcher,
+            valueFormatter = ValueFormatter(stringFetcher)
+        )
 
         initView()
     }

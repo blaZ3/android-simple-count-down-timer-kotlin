@@ -5,8 +5,12 @@ import com.example.countdowntimer.app.countDown.CountDownContract
 import com.example.countdowntimer.app.countDown.CountDownPresenter
 import com.example.countdowntimer.app.timer.Timer
 import com.example.countdowntimer.app.timer.TimerI
+import com.example.countdowntimer.helpers.ValueFormatter
 import com.example.countdowntimer.helpers.stringFetcher.StringFetcherI
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import org.junit.Before
 import org.junit.Test
 
@@ -18,6 +22,7 @@ class CountDownPresenterTests {
     private lateinit var presenter: CountDownContract.Presenter
     private lateinit var view: CountDownContract.View
     private lateinit var stringFetcher: StringFetcherI
+    private lateinit var valueFormatter: ValueFormatter
     private lateinit var timer: TimerI
 
     @Before
@@ -25,11 +30,13 @@ class CountDownPresenterTests {
         timer = Timer()
         view = mock()
         stringFetcher = mock()
+        valueFormatter = ValueFormatter(stringFetcher)
 
         presenter = CountDownPresenter(
             view = view,
             timer = timer,
             stringFetcher = stringFetcher,
+            valueFormatter = valueFormatter,
             logger = mock()
         )
     }
