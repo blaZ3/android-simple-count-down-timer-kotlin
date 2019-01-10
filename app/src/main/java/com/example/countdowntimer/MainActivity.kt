@@ -7,7 +7,9 @@ import com.example.countdowntimer.app.countDown.CountDownContract
 import com.example.countdowntimer.app.countDown.CountDownPresenter
 import com.example.countdowntimer.app.timer.Timer
 import com.example.countdowntimer.helpers.logger.AppLogger
+import com.example.countdowntimer.helpers.logger.LoggerI
 import com.example.countdowntimer.helpers.stringFetcher.AppStringFetcher
+import com.example.countdowntimer.helpers.stringFetcher.StringFetcherI
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), CountDownContract.View {
@@ -16,13 +18,22 @@ class MainActivity : AppCompatActivity(), CountDownContract.View {
 
     private val countDownStarts: Long = 2 *60 * 1000L
 
+    private val mainApplication: MainApplication
+        get() = (application as MainApplication)
+
+    private val logger: LoggerI
+        get() = mainApplication.logger
+
+    private val stringFetcher: StringFetcherI
+        get() = mainApplication.stringFetcher
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         presenter = CountDownPresenter(view = this, timer = Timer(),
-            logger = (application as MainApplication).logger,
-            stringFetcher = (application as MainApplication).stringFetcher)
+            logger = logger,
+            stringFetcher = stringFetcher)
 
         initView()
     }
@@ -45,7 +56,7 @@ class MainActivity : AppCompatActivity(), CountDownContract.View {
     }
 
     override fun timerDone() {
-        txtTimer.text = resources.getString(R.string.str_time_done)
+        txtTimer.text = stringFetcher.getString(R.string.str_time_done)
     }
 
     override fun showToast(msg: String) {
