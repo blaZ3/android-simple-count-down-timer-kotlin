@@ -6,47 +6,32 @@ import android.widget.Toast
 import com.example.countdowntimer.BuildConfig
 import com.example.countdowntimer.MainApplication
 import com.example.countdowntimer.R
-import com.example.countdowntimer.app.timer.Timer
-import com.example.countdowntimer.helpers.ValueFormatter
-import com.example.countdowntimer.helpers.logger.LoggerI
 import com.example.countdowntimer.helpers.stringFetcher.StringFetcherI
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 
 class CountDownActivity : AppCompatActivity(), CountDownContract.View {
-
-    private lateinit var presenter: CountDownContract.Presenter
-
     private var countDownStarts: Long = 2 * 60 * 1000L
-
-    private val logger: LoggerI by inject { parametersOf(BuildConfig.DEBUG) }
-    private val stringFetcher: StringFetcherI by inject()
-    private val valueFormatter: ValueFormatter by inject()
-
     private val COUNTER_TIME: String = "COUNTER_TIME"
+
+    private val stringFetcher: StringFetcherI by inject()
+    private lateinit var presenter: CountDownContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         savedInstanceState?.let {
             if (it.containsKey(COUNTER_TIME)) {
                 countDownStarts = it.getLong(COUNTER_TIME)
             }
         }
-
         initView()
     }
 
     override fun initView() {
-        presenter = CountDownPresenter(
-            view = this, timer = Timer(),
-            logger = logger,
-            stringFetcher = stringFetcher,
-            valueFormatter = valueFormatter
-        )
-
+        presenter = get { parametersOf(this, BuildConfig.DEBUG) }
         presenter.startCountDown(countDownStarts, MainApplication.MAX_TIME)
         btnIncrementTimer.setOnClickListener {
             presenter.incrementTimer()

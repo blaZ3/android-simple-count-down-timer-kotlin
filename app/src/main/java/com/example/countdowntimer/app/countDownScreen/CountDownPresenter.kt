@@ -16,7 +16,6 @@ class CountDownPresenter(
 ) :
     CountDownContract.Presenter {
 
-
     override fun startCountDown(startTimeMillis: Long, maxTimeMillis: Long) {
         timer.start(startTimeMillis, maxTimeMillis, object : TimerI.TimerCallback {
             override fun onTimeUpdate(millisRemaining: Long) {
