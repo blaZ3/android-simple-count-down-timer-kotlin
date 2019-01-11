@@ -13,6 +13,7 @@ interface CountDownContract {
         fun startCountDown(startTimeMillis: Long, maxTimeMillis: Long)
         fun stopCountDown(): Long
         fun incrementTimer()
+        fun getRemainingTime(): Long
     }
 
 }

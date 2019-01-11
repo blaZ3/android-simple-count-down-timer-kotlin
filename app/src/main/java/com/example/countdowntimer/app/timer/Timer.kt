@@ -53,6 +53,10 @@ class Timer : TimerI {
         isRunning = true
     }
 
+    override fun getRemainingTime(): Long {
+        return milliSecondsRemaining
+    }
+
     override fun stop(): Long {
         if (isRunning) {
             isStopped = true

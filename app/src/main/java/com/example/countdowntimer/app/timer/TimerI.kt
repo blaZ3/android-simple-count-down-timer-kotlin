@@ -5,6 +5,7 @@ interface TimerI {
     fun start(startTimeMillis: Long, maxTime: Long, callback: TimerCallback)
     fun stop(): Long
     fun increaseTimer(milliseconds: Long, callback: ChangeTimerCallback)
+    fun getRemainingTime(): Long
 
     interface TimerCallback {
         fun onTimeUpdate(millisRemaining: Long)

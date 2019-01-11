@@ -52,7 +52,7 @@ class CountDownActivity : AppCompatActivity(), CountDownContract.View {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.let {
-            it.putLong(COUNTER_TIME, presenter.stopCountDown())
+            it.putLong(COUNTER_TIME, presenter.getRemainingTime())
         }
         super.onSaveInstanceState(outState)
     }

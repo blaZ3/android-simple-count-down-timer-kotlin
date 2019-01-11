@@ -35,6 +35,10 @@ class CountDownPresenter(
         })
     }
 
+    override fun getRemainingTime(): Long {
+        return timer.getRemainingTime()
+    }
+
     override fun stopCountDown(): Long {
         return try {
             timer.stop()
