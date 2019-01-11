@@ -2,6 +2,7 @@ package com.example.countdowntimer.app.timer
 
 import android.os.Handler
 import android.os.HandlerThread
+import android.os.Looper
 
 class Timer : TimerI {
     private val LOCK = java.lang.Object()
@@ -20,7 +21,9 @@ class Timer : TimerI {
 
     override fun start(startTimeMillis: Long, maxTime: Long, callback: TimerI.TimerCallback) {
         if (isRunning) {
-            callback.onError(TimerAlreadyStartedException)
+            Handler(Looper.getMainLooper()).post {
+                callback.onError(TimerAlreadyStartedException)
+            }
             return
         }
 
@@ -36,10 +39,14 @@ class Timer : TimerI {
                 milliSecondsRemaining -= DELAY_MILLIS
                 if (!isStopped) {
                     if (milliSecondsRemaining > 0) {
-                        callback.onTimeUpdate(milliSecondsRemaining)
+                        Handler(Looper.getMainLooper()).post {
+                            callback.onTimeUpdate(milliSecondsRemaining)
+                        }
                         timerHandler.postDelayed(timerRunnable, DELAY_MILLIS)
                     } else {
-                        callback.onDone()
+                        Handler(Looper.getMainLooper()).post {
+                            callback.onDone()
+                        }
                         stopTimer()
                     }
                 } else {
@@ -74,11 +81,15 @@ class Timer : TimerI {
                 } else {
                     milliSecondsRemaining += milliseconds
                 }
+                Handler(Looper.getMainLooper()).post {
+                    callback.onTimeChanged(milliSecondsRemaining)
+                }
                 LOCK.notifyAll()
-                callback.onTimeChanged(milliSecondsRemaining)
             }
         } else {
-            callback.onError(TimerNotStartedException)
+            Handler(Looper.getMainLooper()).post {
+                callback.onError(TimerNotStartedException)
+            }
         }
     }
 
