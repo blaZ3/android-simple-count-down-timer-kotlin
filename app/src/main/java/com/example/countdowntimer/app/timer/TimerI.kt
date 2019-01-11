@@ -6,20 +6,20 @@ interface TimerI {
     fun stop(): Long
     fun increaseTimer(milliseconds: Long, callback: ChangeTimerCallback)
 
-    interface TimerCallback{
+    interface TimerCallback {
         fun onTimeUpdate(millisRemaining: Long)
         fun onDone()
         fun onError(ex: Exception)
     }
 
-    interface ChangeTimerCallback{
+    interface ChangeTimerCallback {
         fun onTimeChanged(millisRemaining: Long)
         fun onError(ex: Exception)
     }
 
 }
 
-sealed class TimerException(message: String): Exception(message)
-object TimerMaxLimitReachedException: TimerException("Cannot increase time more than max time")
-object TimerAlreadyStartedException: TimerException("Timer is already running")
-object TimerNotStartedException: TimerException("Timer is not running")
+sealed class TimerException(message: String) : Exception(message)
+object TimerMaxLimitReachedException : TimerException("Cannot increase time more than max time")
+object TimerAlreadyStartedException : TimerException("Timer is already running")
+object TimerNotStartedException : TimerException("Timer is not running")

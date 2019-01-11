@@ -3,6 +3,7 @@ package com.example.countdowntimer.app.countDownScreen
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.example.countdowntimer.BuildConfig
 import com.example.countdowntimer.MainApplication
 import com.example.countdowntimer.R
 import com.example.countdowntimer.app.timer.Timer
@@ -10,6 +11,8 @@ import com.example.countdowntimer.helpers.ValueFormatter
 import com.example.countdowntimer.helpers.logger.LoggerI
 import com.example.countdowntimer.helpers.stringFetcher.StringFetcherI
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class CountDownActivity : AppCompatActivity(), CountDownContract.View {
 
@@ -17,14 +20,9 @@ class CountDownActivity : AppCompatActivity(), CountDownContract.View {
 
     private var countDownStarts: Long = 2 * 60 * 1000L
 
-    private val mainApplication: MainApplication
-        get() = (application as MainApplication)
-
-    private val logger: LoggerI
-        get() = mainApplication.logger
-
-    private val stringFetcher: StringFetcherI
-        get() = mainApplication.stringFetcher
+    private val logger: LoggerI by inject { parametersOf(BuildConfig.DEBUG) }
+    private val stringFetcher: StringFetcherI by inject()
+    private val valueFormatter: ValueFormatter by inject()
 
     private val COUNTER_TIME: String = "COUNTER_TIME"
 
@@ -46,7 +44,7 @@ class CountDownActivity : AppCompatActivity(), CountDownContract.View {
             view = this, timer = Timer(),
             logger = logger,
             stringFetcher = stringFetcher,
-            valueFormatter = ValueFormatter(stringFetcher)
+            valueFormatter = valueFormatter
         )
 
         presenter.startCountDown(countDownStarts, MainApplication.MAX_TIME)

@@ -7,7 +7,8 @@ class Timer : TimerI {
     private val LOCK = java.lang.Object()
     private val DELAY_MILLIS = 100L
 
-    @Volatile var milliSecondsRemaining: Long = 0L
+    @Volatile
+    var milliSecondsRemaining: Long = 0L
     private var maxTime: Long = 0L
 
     private var isStopped: Boolean = false
@@ -15,10 +16,10 @@ class Timer : TimerI {
 
     private lateinit var timerThread: HandlerThread
     private lateinit var timerHandler: Handler
-    private lateinit var timerRunnable:Runnable
+    private lateinit var timerRunnable: Runnable
 
     override fun start(startTimeMillis: Long, maxTime: Long, callback: TimerI.TimerCallback) {
-        if (isRunning){
+        if (isRunning) {
             callback.onError(TimerAlreadyStartedException)
             return
         }
@@ -31,17 +32,17 @@ class Timer : TimerI {
         timerHandler = Handler(timerThread.looper)
 
         timerRunnable = Runnable {
-            synchronized(LOCK){
+            synchronized(LOCK) {
                 milliSecondsRemaining -= DELAY_MILLIS
-                if (!isStopped){
-                    if (milliSecondsRemaining > 0){
+                if (!isStopped) {
+                    if (milliSecondsRemaining > 0) {
                         callback.onTimeUpdate(milliSecondsRemaining)
                         timerHandler.postDelayed(timerRunnable, DELAY_MILLIS)
-                    } else{
+                    } else {
                         callback.onDone()
                         stopTimer()
                     }
-                } else{
+                } else {
                     stopTimer()
                 }
                 LOCK.notifyAll()
@@ -53,34 +54,34 @@ class Timer : TimerI {
     }
 
     override fun stop(): Long {
-        if (isRunning){
+        if (isRunning) {
             isStopped = true
             return milliSecondsRemaining
-        }else {
+        } else {
             throw TimerNotStartedException
         }
     }
 
     override fun increaseTimer(milliseconds: Long, callback: TimerI.ChangeTimerCallback) {
-        if(isRunning){
-            synchronized(LOCK){
-                if ((milliSecondsRemaining + milliseconds) > maxTime){
+        if (isRunning) {
+            synchronized(LOCK) {
+                if ((milliSecondsRemaining + milliseconds) > maxTime) {
                     milliSecondsRemaining = maxTime
-                } else{
+                } else {
                     milliSecondsRemaining += milliseconds
                 }
                 LOCK.notifyAll()
                 callback.onTimeChanged(milliSecondsRemaining)
             }
-        }else{
+        } else {
             callback.onError(TimerNotStartedException)
         }
     }
 
-    private fun stopTimer(){
+    private fun stopTimer() {
         isRunning = false
 
-        if (timerThread.isAlive){
+        if (timerThread.isAlive) {
             timerThread.quitSafely()
         }
     }
