@@ -21,9 +21,7 @@ class Timer : TimerI {
 
     override fun start(startTimeMillis: Long, maxTime: Long, callback: TimerI.TimerCallback) {
         if (isRunning) {
-            Handler(Looper.getMainLooper()).post {
-                callback.onError(TimerAlreadyStartedException)
-            }
+            callback.onError(TimerAlreadyStartedException)
             return
         }
 
@@ -39,14 +37,10 @@ class Timer : TimerI {
                 milliSecondsRemaining -= DELAY_MILLIS
                 if (!isStopped) {
                     if (milliSecondsRemaining > 0) {
-                        Handler(Looper.getMainLooper()).post {
-                            callback.onTimeUpdate(milliSecondsRemaining)
-                        }
+                        callback.onTimeUpdate(milliSecondsRemaining)
                         timerHandler.postDelayed(timerRunnable, DELAY_MILLIS)
                     } else {
-                        Handler(Looper.getMainLooper()).post {
-                            callback.onDone()
-                        }
+                        callback.onDone()
                         stopTimer()
                     }
                 } else {
@@ -81,15 +75,11 @@ class Timer : TimerI {
                 } else {
                     milliSecondsRemaining += milliseconds
                 }
-                Handler(Looper.getMainLooper()).post {
-                    callback.onTimeChanged(milliSecondsRemaining)
-                }
+                callback.onTimeChanged(milliSecondsRemaining)
                 LOCK.notifyAll()
             }
         } else {
-            Handler(Looper.getMainLooper()).post {
-                callback.onError(TimerNotStartedException)
-            }
+            callback.onError(TimerNotStartedException)
         }
     }
 

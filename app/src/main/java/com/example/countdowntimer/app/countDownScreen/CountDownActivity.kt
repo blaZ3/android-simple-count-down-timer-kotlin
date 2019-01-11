@@ -39,15 +39,21 @@ class CountDownActivity : AppCompatActivity(), CountDownContract.View {
     }
 
     override fun updateTimer(timer: String) {
-        txtTimer.text = timer
+        runOnUiThread {
+            txtTimer.text = timer
+        }
     }
 
     override fun timerDone() {
-        txtTimer.text = stringFetcher.getString(R.string.str_time_done)
+        runOnUiThread {
+            txtTimer.text = stringFetcher.getString(R.string.str_time_done)
+        }
     }
 
     override fun showToast(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        runOnUiThread {
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
